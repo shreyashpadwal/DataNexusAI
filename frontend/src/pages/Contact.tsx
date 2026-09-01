@@ -47,8 +47,8 @@ export default function Contact() {
   }
 
   const CONNECT = [
-    { Icon: Github,   label: 'GitHub',   href: 'https://github.com',   sub: 'View the project repository' },
-    { Icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com', sub: 'Connect professionally' },
+    { Icon: Github,   label: 'GitHub',   href: 'https://github.com/shreyashpadwal/DataNexusAI',      sub: 'View the project repository' },
+    { Icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/shreyashpadwal/', sub: 'Connect professionally' },
   ]
 
   return (
@@ -130,7 +130,7 @@ export default function Contact() {
                 <ExternalLink className="w-3.5 h-3.5 text-[var(--text-dim)] flex-shrink-0" />
               </a>
             ))}
-            <p className="text-xs text-[var(--text-dim)] pt-1">Links will be updated with actual project URLs.</p>
+
           </div>
 
           <div className="card-sm" style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-mid)' }}>
