@@ -25,6 +25,7 @@
 17. [Observability](#17-observability)
 18. [Known Limitations](#18-known-limitations)
 19. [Project Structure](#19-project-structure)
+20. [Deployment](#20-deployment)
 
 ---
 
@@ -490,4 +491,152 @@ DataNexusAI/
 
 ---
 
+## 20. Deployment
+
+> **Target Architecture:** Vercel (Frontend) → Render (Backend) → Neon PostgreSQL
+
+```
+User → Vercel → Render → Neon PostgreSQL
+                       ↘ Groq API (AI)
+```
+
+### A. Create Neon PostgreSQL Database
+
+1. Sign up at [neon.tech](https://neon.tech) (free tier available)
+2. Create a new project → Create a database named `datanexus_ai`
+3. Copy the **connection string** — it looks like:
+   ```
+   postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/datanexus_ai?sslmode=require
+   ```
+4. Keep this string — you'll need it for Render
+
+### B. Initialize the Neon Database
+
+After deploying the backend to Render (Step C), run initialization once:
+
+```bash
+# Clone the repository locally
+git clone https://github.com/shreyashpadwal/DataNexusAI.git
+cd DataNexusAI/backend
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set your Neon DATABASE_URL temporarily
+export DATABASE_URL="postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/datanexus_ai?sslmode=require"
+
+# Create tables and seed sample data
+python init_db.py
+```
+
+> **Important:** `init_db.py` checks if data already exists before seeding — it will not overwrite existing production data.
+
+### C. Deploy Backend to Render
+
+1. Go to [render.com](https://render.com) → New → Web Service
+2. Connect your GitHub repository (`shreyashpadwal/DataNexusAI`)
+3. Configure the service:
+
+| Setting | Value |
+|---------|-------|
+| **Root Directory** | `backend` |
+| **Runtime** | `Python 3` |
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| **Plan** | Free |
+
+### D. Configure Render Environment Variables
+
+In the Render dashboard → Environment → Add the following variables:
+
+| Variable | Value |
+|----------|-------|
+| `DATABASE_URL` | Your Neon connection string (with `?sslmode=require`) |
+| `ANALYTICS_DATABASE_URL` | Same as `DATABASE_URL` |
+| `GROQ_API_KEY` | Your Groq API key from [console.groq.com](https://console.groq.com) |
+| `GROQ_MODEL` | `openai/gpt-oss-20b` |
+| `SECRET_KEY` | A long random string (Render can auto-generate this) |
+| `ALLOWED_ORIGINS` | `https://your-app.vercel.app` (add after Step E) |
+| `UPLOAD_DIR` | `/tmp/datanexus_uploads` |
+| `MAX_UPLOAD_SIZE_MB` | `10` |
+
+> **Generate a secure SECRET_KEY:** `python -c "import secrets; print(secrets.token_hex(32))"`
+
+After adding variables, Render will redeploy automatically. Verify the health check:
+```
+GET https://your-backend.onrender.com/api/health
+```
+
+### E. Deploy Frontend to Vercel
+
+1. Go to [vercel.com](https://vercel.com) → New Project
+2. Import from GitHub → select `shreyashpadwal/DataNexusAI`
+3. Configure the project:
+
+| Setting | Value |
+|---------|-------|
+| **Root Directory** | `frontend` |
+| **Framework Preset** | `Vite` |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist` |
+
+### F. Configure Vercel Environment Variables
+
+In Vercel → Project Settings → Environment Variables:
+
+| Variable | Value |
+|----------|-------|
+| `VITE_API_URL` | `https://your-backend.onrender.com` (your Render URL) |
+
+> **Security:** Do NOT add `DATABASE_URL`, `GROQ_API_KEY`, or `SECRET_KEY` to Vercel — those are backend-only secrets.
+
+### G. Update Render ALLOWED_ORIGINS
+
+After Vercel assigns your frontend URL (e.g. `https://datanexus-ai.vercel.app`):
+
+1. Go back to Render → Environment
+2. Update `ALLOWED_ORIGINS` to include the Vercel URL:
+   ```
+   https://datanexus-ai.vercel.app,http://localhost:5173
+   ```
+3. Save → Render will redeploy with the updated CORS settings
+
+### H. Test the Production Application
+
+```bash
+# Health check
+curl https://your-backend.onrender.com/api/health
+
+# Expected:
+# {"status":"ok","database":"connected","version":"1.0.0"}
+```
+
+Then visit your Vercel URL, register an account, and test:
+- ✅ AI Analyst — ask a natural language question
+- ✅ Data Dashboard — charts and KPIs load
+- ✅ ETL — upload a CSV file
+- ✅ Query History — past queries visible
+
+### Environment Variable Summary
+
+**Render (Backend) — keep these secret:**
+```
+DATABASE_URL=postgresql://...@neon.tech/datanexus_ai?sslmode=require
+ANALYTICS_DATABASE_URL=<same as DATABASE_URL>
+GROQ_API_KEY=gsk_...
+GROQ_MODEL=openai/gpt-oss-20b
+SECRET_KEY=<generated 64-char hex>
+ALLOWED_ORIGINS=https://your-app.vercel.app
+UPLOAD_DIR=/tmp/datanexus_uploads
+MAX_UPLOAD_SIZE_MB=10
+```
+
+**Vercel (Frontend) — public, browser-safe only:**
+```
+VITE_API_URL=https://your-backend.onrender.com
+```
+
+---
+
 *Built as a full-stack AI analytics project demonstrating LangGraph agent workflows, natural language to SQL conversion, JWT authentication, controlled ETL pipelines, and interactive data visualization.*
+

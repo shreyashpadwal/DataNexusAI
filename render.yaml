@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: datanexus-ai-backend
+    runtime: python
+    region: oregon  # Change to match your preferred region
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+    rootDir: backend
+
+    envVars:
+      - key: DATABASE_URL
+        sync: false          # Set manually in Render dashboard — never commit
+      - key: ANALYTICS_DATABASE_URL
+        sync: false          # Same as DATABASE_URL in most cases
+      - key: GROQ_API_KEY
+        sync: false          # Set manually in Render dashboard
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b    # Override in dashboard if needed
+      - key: SECRET_KEY
+        generateValue: true  # Render auto-generates a secure random value
+      - key: ALLOWED_ORIGINS
+        sync: false          # Set after Vercel deployment — e.g. https://your-app.vercel.app
+      - key: UPLOAD_DIR
+        value: /tmp/datanexus_uploads
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "10"

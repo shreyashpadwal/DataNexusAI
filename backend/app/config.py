@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     analytics_database_url: str = ""  # Falls back to database_url if not set
 
     # App
-    secret_key: str = "datanexus-dev-secret"
-    upload_dir: str = "uploads"
+    secret_key: str = "datanexus-dev-secret-CHANGE-IN-PRODUCTION"
+    upload_dir: str = "/tmp/datanexus_uploads"   # /tmp is writable on Render; override locally with UPLOAD_DIR=uploads
     max_upload_size_mb: int = 10
 
     # CORS

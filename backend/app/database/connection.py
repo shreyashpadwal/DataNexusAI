@@ -21,8 +21,9 @@ settings = get_settings()
 engine = create_engine(
     settings.database_url,
     pool_pre_ping=True,   # Detect stale connections automatically
-    pool_size=5,
-    max_overflow=10,
+    pool_size=2,          # Reduced for Neon free tier (max 5-25 connections)
+    max_overflow=3,       # At most 5 total connections per engine
+    pool_recycle=300,     # Recycle connections every 5 minutes (Neon idle timeout)
     echo=False,           # Set True to log SQL in development
 )
 
@@ -32,8 +33,9 @@ engine = create_engine(
 analytics_engine = create_engine(
     settings.analytics_url,
     pool_pre_ping=True,
-    pool_size=5,
-    max_overflow=10,
+    pool_size=2,
+    max_overflow=3,
+    pool_recycle=300,
     echo=False,
 )
 

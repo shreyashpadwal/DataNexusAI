@@ -110,13 +110,15 @@ async def upload_and_process(
         return EtlResponse(success=False, filename=filename, error="Uploaded file is empty.")
 
     # ── 3. Write to temp file for pandas to read ────────────────────
+    # Use system temp dir (/tmp on Linux/Render) — always writable,
+    # even on platforms with ephemeral filesystems like Render.
     tmp_path = None
     try:
         with tempfile.NamedTemporaryFile(
             mode="wb",
             suffix=".csv",
             delete=False,
-            dir=settings.upload_dir,
+            dir=tempfile.gettempdir(),
         ) as tmp:
             tmp.write(raw_bytes)
             tmp_path = tmp.name

@@ -9,9 +9,12 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.db_models import AuthUser
+from app.config import get_settings
 
-# JWT configuration
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "datanexus-dev-secret-do-not-use-in-prod")
+# JWT configuration — reads SECRET_KEY from environment (set in .env or Render env vars)
+# Falls back to an insecure dev default; MUST be overridden in production.
+_settings = get_settings()
+JWT_SECRET_KEY = _settings.secret_key
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
