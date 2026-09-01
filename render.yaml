@@ -2,9 +2,11 @@ services:
   - type: web
     name: datanexus-ai-backend
     runtime: python
-    region: oregon  # Change to match your preferred region
+    region: oregon          # Change to match your preferred region
     plan: free
 
+    # Python version is pinned in backend/runtime.txt (python-3.11.9).
+    # This prevents Render from using Python 3.14 which has no pandas wheel.
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
