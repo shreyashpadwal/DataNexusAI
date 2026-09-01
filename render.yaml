@@ -2,29 +2,43 @@ services:
   - type: web
     name: datanexus-ai-backend
     runtime: python
-    region: oregon          # Change to match your preferred region
+    region: oregon
     plan: free
 
-    # Python version is pinned in backend/runtime.txt (python-3.11.9).
-    # This prevents Render from using Python 3.14 which has no pandas wheel.
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
     rootDir: backend
 
     envVars:
+      # ── Python version pin ─────────────────────────────────────────────
+      # PYTHON_VERSION is the authoritative way to pin Python on Render.
+      # runtime.txt / .python-version are also present as belt-and-suspenders,
+      # but this env var takes effect regardless of rootDir resolution.
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+      # ── Database ───────────────────────────────────────────────────────
       - key: DATABASE_URL
-        sync: false          # Set manually in Render dashboard — never commit
+        sync: false
       - key: ANALYTICS_DATABASE_URL
-        sync: false          # Same as DATABASE_URL in most cases
+        sync: false
+
+      # ── AI ─────────────────────────────────────────────────────────────
       - key: GROQ_API_KEY
-        sync: false          # Set manually in Render dashboard
+        sync: false
       - key: GROQ_MODEL
-        value: openai/gpt-oss-20b    # Override in dashboard if needed
+        value: openai/gpt-oss-20b
+
+      # ── Auth ───────────────────────────────────────────────────────────
       - key: SECRET_KEY
-        generateValue: true  # Render auto-generates a secure random value
+        generateValue: true
+
+      # ── CORS ───────────────────────────────────────────────────────────
       - key: ALLOWED_ORIGINS
-        sync: false          # Set after Vercel deployment — e.g. https://your-app.vercel.app
+        sync: false
+
+      # ── File uploads (ephemeral /tmp — always writable on Render) ──────
       - key: UPLOAD_DIR
         value: /tmp/datanexus_uploads
       - key: MAX_UPLOAD_SIZE_MB
