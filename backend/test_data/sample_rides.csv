@@ -1,0 +1,12 @@
+user_id,vehicle_type,city,fare,rating,ride_date
+1,Sedan,Pune,250.00,4.5,2024-01-15
+2,SUV,Mumbai,400.00,4.0,2024-01-16
+2,SUV,Mumbai,400.00,4.0,2024-01-16
+3,Hatchback,Pune,,5.0,2024-01-17
+4,Auto,Delhi,150.00,,2024-01-18
+5,Bike,Bangalore,80.00,3.5,2024-01-19
+6,Sedan,Chennai,300.00,4.8,2024-01-20
+7,SUV,Hyderabad,450.00,4.2,2024-01-21
+8,Auto,Kolkata,120.00,3.8,2024-01-22
+9,Sedan,Mumbai,280.00,4.6,2024-01-23
+=CMD("test"),Bike,Mumbai,400.00,4.0,2024-01-24

@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base:    #0a0b0e;
+    --bg-surface: #111318;
+    --bg-card:    #16181f;
+    --bg-hover:   #1c1f28;
+    --border:     #1e2130;
+    --border-mid: #252840;
+    --bg-glass:   rgba(17,19,24,0.85);
+    
+    --accent:     #6366f1;
+    --accent-dim: #4f46e5;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1; /* slate-300 */
+    --text-muted: #94a3b8; /* slate-400 */
+    --text-dim: #64748b; /* slate-500 */
+  }
+
+  /* Light Theme Overrides */
+  :root[data-theme='light'] {
+    --bg-base:    #f8fafc; /* slate-50 */
+    --bg-surface: #ffffff;
+    --bg-card:    #f1f5f9; /* slate-100 */
+    --bg-hover:   #e2e8f0; /* slate-200 */
+    --border:     #cbd5e1; /* slate-300 */
+    --border-mid: #94a3b8; /* slate-400 */
+    --bg-glass:   rgba(255,255,255,0.85);
+    
+    --text-primary: #0f172a; /* slate-900 */
+    --text-secondary: #334155; /* slate-700 */
+    --text-muted: #475569; /* slate-600 */
+    --text-dim: #64748b; /* slate-500 */
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    @apply antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  * { box-sizing: border-box; }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: inherit;
+  }
+}
+
+@layer components {
+  /* ── Cards ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    @apply rounded-2xl p-5;
+  }
+  .card-sm {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    @apply rounded-xl p-4;
+  }
+  .card-hover {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    @apply rounded-2xl p-5 cursor-pointer transition-all duration-200;
+  }
+  .card-hover:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-mid);
+    @apply shadow-lg shadow-black/5 -translate-y-0.5;
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700
+           text-white text-sm font-medium px-4 py-2.5 rounded-xl
+           transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-[var(--bg-base)];
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm font-medium px-4 py-2.5 rounded-xl
+           transition-all duration-150
+           focus:outline-none focus:ring-2 focus:ring-slate-500/50;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-mid);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-[var(--text-muted)] hover:text-[var(--text-primary)] text-sm font-medium px-3 py-2 rounded-lg
+           transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-slate-500/50;
+  }
+  .btn-ghost:hover { background: var(--bg-hover); }
+
+  /* ── Input ── */
+  .input-field {
+    @apply w-full rounded-xl px-4 py-3 text-sm
+           focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-150;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    color: var(--text-primary);
+  }
+  .input-field::placeholder {
+    color: var(--text-dim);
+  }
+  .input-field:focus { border-color: rgba(99,102,241,0.5); }
+
+  /* ── Badges ── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+  .badge-indigo  { @apply bg-indigo-500/10 text-indigo-500 border border-indigo-500/20; }
+  .badge-green   { @apply bg-emerald-500/10 text-emerald-500 border border-emerald-500/20; }
+  .badge-amber   { @apply bg-amber-500/10 text-amber-500 border border-amber-500/20; }
+  .badge-red     { @apply bg-red-500/10 text-red-500 border border-red-500/20; }
+  .badge-slate   { @apply bg-slate-500/10 text-slate-500 border border-slate-500/20; }
+  .badge-violet  { @apply bg-violet-500/10 text-violet-500 border border-violet-500/20; }
+
+  /* ── Code ── */
+  .code-block {
+    @apply font-mono text-sm rounded-xl p-4 text-emerald-500 overflow-x-auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  
+  :root[data-theme='light'] .code-block {
+    color: #059669; /* emerald-600 */
+  }
+
+  /* ── Divider ── */
+  .divider { border-color: var(--border); }
+
+  /* ── Section label ── */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)];
+  }
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in  { animation: fadeIn  0.25s ease-out both; }
+.animate-slide-in { animation: slideIn 0.2s ease-out both; }
+.animate-pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+
+.shimmer {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Gradient text ── */
+.text-gradient {
+  background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+:root[data-theme='light'] .text-gradient {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 50%, #312e81 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Processing timeline dots ── */
+.step-connector {
+  width: 1px;
+  background: linear-gradient(to bottom, var(--border-mid), transparent);
+  @apply mx-auto h-5;
+}
+
+/* ── Focus visible outline ── */
+:focus-visible {
+  outline: 2px solid rgba(99,102,241,0.6);
+  outline-offset: 2px;
+}

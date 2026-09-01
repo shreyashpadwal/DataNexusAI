@@ -1,0 +1,73 @@
+# ─────────────────────────────────────────────────────────────────
+# DataNexus AI — .gitignore
+# ─────────────────────────────────────────────────────────────────
+
+# ── Secrets (NEVER commit) ──────────────────────────────────────
+.env
+*.env
+!.env.example
+
+# ── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+build/
+.eggs/
+
+# ── Virtual environment ─────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+
+# ── Uploads (user data) ─────────────────────────────────────────
+backend/uploads/
+backend/*.csv
+!backend/test_data/
+
+# ── Node / Frontend ─────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+dist/
+
+# ── OS ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDEs ────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Pytest / coverage ───────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Mypy / type checkers ────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+
+# ── Zip archives ────────────────────────────────────────────────
+*.zip
+
+# ── One-off dev/migration scripts (not needed by consumers) ─────
+fix_*.py
+replace_*.py
+scratch_*.py
+list_models.py
+verify_db.py
+cleanup_test_users.py
